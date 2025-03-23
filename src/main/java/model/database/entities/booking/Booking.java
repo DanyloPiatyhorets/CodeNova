@@ -1,12 +1,13 @@
-package entities;
+package model.database.entities.booking;
+
+import model.database.entities.Customer;
 
 import java.time.LocalDateTime;
 
 
 public abstract class Booking {
-
     //the unique ID that is given to each booking
-    protected String bookingId;
+    protected String id;
     //the bookings are under one name
     protected Customer customer;
     //the runs have a start date
@@ -14,17 +15,14 @@ public abstract class Booking {
     //the runs have an end date
     protected LocalDateTime endDate;
     //the booking has to be confirmed within 28 days!!"!!!
-    protected static boolean confirmed = false;
+    protected boolean confirmed;
 
 
-    public Booking(String bookingId, Customer customer, LocalDateTime startDate, LocalDateTime endDate) {
-        this.bookingId = bookingId;
+    public Booking(String id, Customer customer, LocalDateTime startDate, LocalDateTime endDate, boolean confirmed) {
+        this.id = id;
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-    static boolean confrimBooking(){
-        return confirmed = true;
-
+        this.confirmed = confirmed;
     }
 }
