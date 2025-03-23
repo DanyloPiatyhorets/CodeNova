@@ -1,8 +1,10 @@
-package GUI;
-import javax.swing.*;
+package view;
 
-public class MainApp {
-    public static void main(String[] args) {
+import javax.swing.*;
+import java.awt.*;
+
+public class MainView extends JFrame {
+    public MainView() throws HeadlessException {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("My Swing App");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
