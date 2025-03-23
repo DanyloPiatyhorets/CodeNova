@@ -1,4 +1,4 @@
-package marketing;
+package model.api.marketing;
 
 import java.util.Date;
 import java.util.List;
