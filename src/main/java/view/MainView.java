@@ -13,9 +13,8 @@ public class MainView extends JFrame {
 
     private void initializeUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 800);
+        setSize(1000, 700);
         setLocationRelativeTo(null);
-
         createMenuBar();
         createMainTabs();
     }
