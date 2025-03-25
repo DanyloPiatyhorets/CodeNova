@@ -237,20 +237,63 @@ public class MainView extends JFrame {
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd");
         dateSpinner.setEditor(dateEditor);
         datePanel.add(dateSpinner);
+
         JButton generateSheet = new JButton("Generate Daily Sheet");
-        datePanel.add(generateSheet);
 
         // Daily sheet content
         JTextArea sheetContent = new JTextArea(20, 60);
         sheetContent.setEditable(false);
-        sheetContent.setText("Daily Sheet will be generated here...");
+
+        // Add action listener to the button
+        generateSheet.addActionListener(e -> {
+            // Get the selected date
+            java.util.Date selectedDate = (java.util.Date) dateSpinner.getValue();
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = sdf.format(selectedDate);
+
+            // Generate sample content (in real app, this would come from your backend)
+            String sampleContent = "Daily Sheet for " + formattedDate + "\n\n";
+            sampleContent += "8:00 AM - Venue opens\n";
+            sampleContent += "9:00 AM - Client arrival (The Phantom of the Opera)\n";
+            sampleContent += "10:00 AM - Setup begins (Main Hall - Theater configuration)\n";
+            sampleContent += "2:00 PM - Matinee performance begins\n";
+            sampleContent += "5:00 PM - Cleanup after matinee\n";
+            sampleContent += "7:00 PM - Evening performance begins\n";
+            sampleContent += "10:00 PM - Venue closes\n";
+
+            sheetContent.setText(sampleContent);
+        });
+
+        datePanel.add(generateSheet);
+
         JScrollPane sheetScroll = new JScrollPane(sheetContent);
 
         // Print/export options
         JPanel exportPanel = new JPanel();
         JButton printSheet = new JButton("Print");
+        printSheet.addActionListener(e -> {
+            try {
+                sheetContent.print();
+            } catch (java.awt.print.PrinterException ex) {
+                JOptionPane.showMessageDialog(this, "Printing failed: " + ex.getMessage(),
+                        "Print Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         JButton exportPDF = new JButton("Export as PDF");
+        exportPDF.addActionListener(e -> {
+            // In a real app, you would implement PDF generation here
+            JOptionPane.showMessageDialog(this, "PDF export would be implemented here",
+                    "Export", JOptionPane.INFORMATION_MESSAGE);
+        });
+
         JButton exportExcel = new JButton("Export as Excel");
+        exportExcel.addActionListener(e -> {
+            // In a real app, you would implement Excel export here
+            JOptionPane.showMessageDialog(this, "Excel export would be implemented here",
+                    "Export", JOptionPane.INFORMATION_MESSAGE);
+        });
+
         exportPanel.add(printSheet);
         exportPanel.add(exportPDF);
         exportPanel.add(exportExcel);
