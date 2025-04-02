@@ -2,9 +2,14 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class MainView extends JFrame {
     private JTabbedPane tabbedPane;
+
+    // Backend service simulation
+    private BackendService backend = new BackendService();
 
     public MainView() {
         super("Lancaster Music Hall - Operations System");
@@ -58,6 +63,8 @@ public class MainView extends JFrame {
 
     private JPanel createCalendarPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+        DefaultListModel<String> eventModel = new DefaultListModel<>();
+
 
         // Calendar view
         JPanel calendarViewPanel = new JPanel(new BorderLayout());
@@ -93,8 +100,9 @@ public class MainView extends JFrame {
         // Event list for selected day
         JPanel eventListPanel = new JPanel(new BorderLayout());
         JLabel eventsLabel = new JLabel("Events for Selected Day", JLabel.CENTER);
-        JList<String> eventList = new JList<>(new String[]{"No events selected"});
+        JList<String> eventList = new JList<>(eventModel);
         JScrollPane eventScroll = new JScrollPane(eventList);
+
 
         eventListPanel.add(eventsLabel, BorderLayout.NORTH);
         eventListPanel.add(eventScroll, BorderLayout.CENTER);
@@ -109,6 +117,21 @@ public class MainView extends JFrame {
             roomPanel.add(roomCheck);
         }
 
+        // Backend integration points
+        prevMonth.addActionListener(e -> {
+            // TODO: Backend needs to implement getCalendarData(month, year)
+            // Sample data until implemented
+            updateCalendarGrid(calendarGrid, monthLabel, eventModel);
+        });
+
+        nextMonth.addActionListener(e -> {
+            // TODO: Backend needs to implement getCalendarData(month, year)
+            updateCalendarGrid(calendarGrid, monthLabel, eventModel);
+        });
+
+
+
+
         // Add components to main panel
         panel.add(calendarViewPanel, BorderLayout.CENTER);
         panel.add(eventListPanel, BorderLayout.EAST);
@@ -116,9 +139,41 @@ public class MainView extends JFrame {
         return panel;
     }
 
+    // Sample data generation for GUI testing
+// Temporary implementation with sample data
+    private void updateCalendarGrid(JPanel grid, JLabel monthLabel, DefaultListModel<String> events) {
+        grid.removeAll();
+
+        // Add day headers
+        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        for (String day : days) {
+            grid.add(new JLabel(day, JLabel.CENTER));
+        }
+
+        // Add sample days
+        for (int i = 1; i <= 28; i++) {
+            JButton dayBtn = new JButton(String.valueOf(i));
+            final int day = i;
+            dayBtn.addActionListener(e -> {
+                events.clear();
+                events.addElement("Performance: Phantom - Main Hall");
+                events.addElement("Film: Casablanca - Stalls Only");
+                events.addElement("Meeting: Room 3 - 2pm");
+            });
+            grid.add(dayBtn);
+        }
+
+        grid.revalidate();
+        grid.repaint();
+    }
+
     private JPanel createBookingsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
+        // Booking list
+        DefaultListModel<Booking> bookingModel = new DefaultListModel<>();
+        backend.getBookings(null, null).forEach(bookingModel::addElement);
+        JList<Booking> bookingList = new JList<>(bookingModel);
 
         // Booking list
         JPanel bookingListPanel = new JPanel(new BorderLayout());
@@ -126,7 +181,6 @@ public class MainView extends JFrame {
         String[] bookings = {"The Phantom of the Opera - Main Hall - Feb 10-15",
                 "Corporate Meeting - Meeting Room 3 - Feb 12",
                 "Film: Casablanca - Main Hall - Feb 18"};
-        JList<String> bookingList = new JList<>(bookings);
         JScrollPane bookingScroll = new JScrollPane(bookingList);
 
         bookingListPanel.add(bookingLabel, BorderLayout.NORTH);
@@ -169,6 +223,22 @@ public class MainView extends JFrame {
         actionPanel.add(saveBooking);
         actionPanel.add(cancelBooking);
 
+        // Save button handler
+        saveBooking.addActionListener(e -> {
+            BookingDetails details = new BookingDetails();
+            // Populate details from form
+            boolean success = backend.saveBooking(details);
+
+            if(success) {
+                bookingModel.addElement(new Booking(
+                        details.clientName,
+                        String.join(",", details.rooms),
+                        details.startDate,
+                        details.endDate
+                ));
+            }
+        });
+
         // Add components to main panel
         panel.add(bookingListPanel, BorderLayout.WEST);
         panel.add(detailsPanel, BorderLayout.CENTER);
@@ -184,6 +254,11 @@ public class MainView extends JFrame {
         JPanel venuePanel = new JPanel();
         venuePanel.add(new JLabel("Select Venue:"));
         JComboBox<String> venueSelect = new JComboBox<>(new String[]{"Main Hall", "Small Hall"});
+        venueSelect.addActionListener(e -> {
+            String selectedVenue = (String) venueSelect.getSelectedItem();
+            SeatingMap seating = backend.getSeatingConfiguration(selectedVenue);
+            updateSeatingDisplay(seating);
+        });
         venuePanel.add(venueSelect);
 
         // Configuration selection
@@ -224,6 +299,10 @@ public class MainView extends JFrame {
         panel.add(seatControlPanel, BorderLayout.EAST);
 
         return panel;
+    }
+
+    private void updateSeatingDisplay(SeatingMap seating) {
+        // TODO: Implement seating visualization based on backend data
     }
 
     private JPanel createDailySheetsPanel() {
@@ -397,5 +476,68 @@ public class MainView extends JFrame {
     // Helper methods
     private void showDayDetails(int day) {
         JOptionPane.showMessageDialog(this, "Details for day " + day, "Day Details", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Sample backend service simulation
+    class BackendService {
+        // TODO: Backend team to implement these methods
+
+        public List<Booking> getBookings(Date start, Date end) {
+            // Sample data
+            return Arrays.asList(
+                    new Booking("Phantom of the Opera", "Main Hall", new Date(), new Date()),
+                    new Booking("Corporate Meeting", "Meeting Room 3", new Date(), new Date())
+            );
+        }
+
+        public boolean saveBooking(BookingDetails details) {
+            // TODO: Implement persistence
+            return true;
+        }
+
+        public SeatingMap getSeatingConfiguration(String venue) {
+            // Sample seating map
+            return new SeatingMap(venue);
+        }
+    }
+
+    // Data models needed from backend
+    static class Booking {
+        String eventName;
+        String venue;
+        Date startDate;
+        Date endDate;
+
+        // TODO: Add all fields from specifications
+        public Booking(String name, String venue, Date start, Date end) {
+            this.eventName = name;
+            this.venue = venue;
+            this.startDate = start;
+            this.endDate = end;
+        }
+    }
+
+    static class SeatingMap {
+        String venue;
+        boolean[][] wheelchairSpaces;
+        boolean[][] restrictedViews;
+
+        public SeatingMap(String venue) {
+            // TODO: Implement actual seat mapping
+            this.venue = venue;
+        }
+    }
+
+    static class BookingDetails {
+        String clientName;
+        String eventType;
+        Date startDate;
+        Date endDate;
+        List<String> rooms;
+        String configuration;
+        int setupDays;
+        double revenueShare;
+
+        // TODO: Add validation methods per specifications
     }
 }
