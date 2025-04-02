@@ -5,10 +5,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBC {
-
+// https://sst-stuproj.city.ac.uk/phpmyadmin/index.php?route=/database/structure&db=in2033t29
     private static final String URL = "jdbc:mysql://sst-stuproj.city.ac.uk:3306/in2033t29";
-    private static final String USER = "user";
-    private static final String PASSWORD = "password";
+    private static final String USER = "in2033t29_a";
+    private static final String PASSWORD = "q6yzPzkePog";
+    //Database name:  in2033t29
+
+    //Admin user:  in2033t29_a
+    //Admin password: q6yzPzkePog
+
+    //Data user:  in2033t29_d
+    //Data password: 8VHRrnzsM60
+
+
 
     public static Connection getConnection() {
         Connection connection = null;
