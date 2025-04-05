@@ -56,6 +56,10 @@ public class Room {
      }
 
      public void setCapacity(int capacity) {
+
+
+
+
           this.capacity = capacity;
      }
 
@@ -72,6 +76,9 @@ public class Room {
      }
 
      public void setRoomType(String roomType) {
+
+
+
           this.roomType = roomType;
      }
 
