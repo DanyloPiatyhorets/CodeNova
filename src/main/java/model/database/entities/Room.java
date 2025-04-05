@@ -4,7 +4,7 @@ import java.util.List;
 
 /// Room has many-to-many relationship with Booking
 public class Room {
-     private String roomId;
+     private int roomId;
 
      private String name;
      private int classroomCapacity;
@@ -37,7 +37,6 @@ public class Room {
           this.rateAllDay = rateAllDay;
           this.rateWeek = rateWeek;
      }
-
      public void addBooking(Booking booking){
           bookings.add(booking);
      };
@@ -48,11 +47,11 @@ public class Room {
           return bookings;
      }
 
-     public String getRoomId() {
+     public int getRoomId() {
           return roomId;
      }
 
-     public void setRoomId(String roomId) {
+     public void setRoomId(int roomId) {
           this.roomId = roomId;
      }
 

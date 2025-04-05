@@ -78,7 +78,7 @@ public class RoomManager {
     }
 
     // Delete room by room_id
-    public void deleteRoom(String room_name) throws SQLException {
+    public void deleteRoomByName(String room_name) throws SQLException {
         String query = "DELETE FROM rooms WHERE room_name = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, room_name);
