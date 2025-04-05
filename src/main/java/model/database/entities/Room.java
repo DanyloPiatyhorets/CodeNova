@@ -37,6 +37,26 @@ public class Room {
           this.rateAllDay = rateAllDay;
           this.rateWeek = rateWeek;
      }
+     public Room(
+             int id,
+             String name,
+             int classroomCapacity,
+             int boardroomCapacity,
+             int presentationCapacity,
+             int rateOneHour,
+             int rateMorningAfternoon,
+             int rateAllDay,
+             int rateWeek) {
+          this.roomId = id;
+          this.name = name;
+          this.classroomCapacity = classroomCapacity;
+          this.boardroomCapacity = boardroomCapacity;
+          this.presentationCapacity = presentationCapacity;
+          this.rateOneHour = rateOneHour;
+          this.rateMorningAfternoon = rateMorningAfternoon;
+          this.rateAllDay = rateAllDay;
+          this.rateWeek = rateWeek;
+     }
      public void addBooking(Booking booking){
           bookings.add(booking);
      };
@@ -117,5 +137,13 @@ public class Room {
 
      public void setRateWeek(int rateWeek) {
           this.rateWeek = rateWeek;
+     }
+
+     @Override
+     public String toString() {
+          return "Room{" +
+                  "name='" + name + '\'' +
+                  ", classroomCapacity=" + classroomCapacity +
+                  '}';
      }
 }

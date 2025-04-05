@@ -13,12 +13,12 @@ public class RoomManager {
     }
 
     // Create a new room
-    public void createRoom(Room room) throws SQLException {
+    public int createRoom(Room room) throws SQLException {
         String query = "INSERT INTO rooms (room_name, classroom_capacity, boardroom_capacity, presentation_capacity, "
                 + "hourly_rate, morning_afternoon_rate, all_day_rate, weekly_rate) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             // Set values from the Room object
             stmt.setString(1, room.getName());
             stmt.setInt(2, room.getClassroomCapacity());
@@ -31,10 +31,18 @@ public class RoomManager {
 
             // Execute the insert statement
             stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int generatedRoomId = rs.getInt(1);
+                    room.setRoomId(generatedRoomId);
+                }
+            }
         }
+        return room.getRoomId();
     }
 
-    // Get room the database by room_id
+    // Get room the database by room name
     public Room getRoomByName(String name) throws SQLException {
         String query = "SELECT * FROM rooms WHERE room_name = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -42,7 +50,7 @@ public class RoomManager {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Extract data from the ResultSet and create a Room object
+                    int id = rs.getInt("room_id");
                     int classroomCapacity = rs.getInt("classroom_capacity");
                     int boardroomCapacity = rs.getInt("boardroom_capacity");
                     int presentationCapacity = rs.getInt("presentation_capacity");
@@ -52,7 +60,7 @@ public class RoomManager {
                     int rateWeek = rs.getInt("weekly_rate");
 
                     // Create and return a Room object with the retrieved data
-                    return new Room(name, classroomCapacity, boardroomCapacity, presentationCapacity,
+                    return new Room(id, name, classroomCapacity, boardroomCapacity, presentationCapacity,
                             rateOneHour, rateMorningAfternoon, rateAllDay, rateWeek);
                 }
             }
