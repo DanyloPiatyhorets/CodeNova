@@ -17,6 +17,8 @@ public class Room {
      private String roomType;
      private final Connection connection;
 
+
+     //this class is to create rooms
      public Room(String id, String name, boolean availability, int capacity,float price, String roomType) {
           this.id = id;
           this.name = name;
