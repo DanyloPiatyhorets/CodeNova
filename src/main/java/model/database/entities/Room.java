@@ -1,40 +1,78 @@
 package model.database.entities;
 
-import model.database.JDBC;
-
-import java.sql.Date;
 import java.util.List;
-import java.util.ArrayList;
-import java.sql.*;
 
-
+/// Room has many-to-many relationship with Booking
 public class Room {
-     private String id;
+     private int roomId;
+
      private String name;
-     private boolean availability;
-     private int capacity;
-     private float price;
-     private String roomType;
-     private final Connection connection;
+     private int classroomCapacity;
+     private int boardroomCapacity;
+     private int presentationCapacity;
 
+     private int rateOneHour;
+     private int rateMorningAfternoon;
+     private int rateAllDay;
+     private int rateWeek;
 
-     //this class is to create rooms
-     public Room(String id, String name, boolean availability, int capacity,float price, String roomType) {
-          this.id = id;
+     // One room can have many bookings at different times
+     private List<Booking> bookings;
+
+     public Room(
+                 String name,
+                 int classroomCapacity,
+                 int boardroomCapacity,
+                 int presentationCapacity,
+                 int rateOneHour,
+                 int rateMorningAfternoon,
+                 int rateAllDay,
+                 int rateWeek) {
           this.name = name;
-          this.availability = availability;
-          this.capacity = capacity;
-          this.price = price;
-          this.roomType = roomType;
-          this.connection = JDBC.getConnection();
+          this.classroomCapacity = classroomCapacity;
+          this.boardroomCapacity = boardroomCapacity;
+          this.presentationCapacity = presentationCapacity;
+          this.rateOneHour = rateOneHour;
+          this.rateMorningAfternoon = rateMorningAfternoon;
+          this.rateAllDay = rateAllDay;
+          this.rateWeek = rateWeek;
+     }
+     public Room(
+             int id,
+             String name,
+             int classroomCapacity,
+             int boardroomCapacity,
+             int presentationCapacity,
+             int rateOneHour,
+             int rateMorningAfternoon,
+             int rateAllDay,
+             int rateWeek) {
+          this.roomId = id;
+          this.name = name;
+          this.classroomCapacity = classroomCapacity;
+          this.boardroomCapacity = boardroomCapacity;
+          this.presentationCapacity = presentationCapacity;
+          this.rateOneHour = rateOneHour;
+          this.rateMorningAfternoon = rateMorningAfternoon;
+          this.rateAllDay = rateAllDay;
+          this.rateWeek = rateWeek;
+     }
+     public void addBooking(Booking booking){
+          bookings.add(booking);
+     };
+     public void removeBooking(Booking booking){
+          bookings.remove(booking);
+     }
+     public List<Booking> getBookings(){
+          return bookings;
      }
 
-     public String getId() {
-          return id;
+     public int getRoomId() {
+          return roomId;
      }
 
-     public void setId(String id) {
-          this.id = id;
+     public void setRoomId(int roomId) {
+          this.roomId = roomId;
      }
 
      public String getName() {
@@ -45,79 +83,67 @@ public class Room {
           this.name = name;
      }
 
-     public boolean isAvailability() {
-          return availability;
+     public int getClassroomCapacity() {
+          return classroomCapacity;
      }
 
-     public void setAvailability(boolean availability) {
-          this.availability = availability;
+     public void setClassroomCapacity(int classroomCapacity) {
+          this.classroomCapacity = classroomCapacity;
      }
 
-     public int getCapacity() {
-          return capacity;
+     public int getBoardroomCapacity() {
+          return boardroomCapacity;
      }
 
-     public void setCapacity(int capacity) {
-
-
-
-
-          this.capacity = capacity;
+     public void setBoardroomCapacity(int boardroomCapacity) {
+          this.boardroomCapacity = boardroomCapacity;
      }
 
-     public float getPrice() {
-          return price;
+     public int getPresentationCapacity() {
+          return presentationCapacity;
      }
 
-     public void setPrice(float price) {
-          this.price = price;
+     public void setPresentationCapacity(int presentationCapacity) {
+          this.presentationCapacity = presentationCapacity;
      }
 
-     public String getRoomType() {
-          return roomType;
+     public int getRateOneHour() {
+          return rateOneHour;
      }
 
-     public void setRoomType(String roomType) {
-
-
-
-          this.roomType = roomType;
+     public void setRateOneHour(int rateOneHour) {
+          this.rateOneHour = rateOneHour;
      }
 
-
-     public List<Room> getAvailableRoomsByDate(Date date) {
-          List<Room> availableRooms = new ArrayList<>();
-
-          String query = "SELECT room_id, room_name, availability, capacity, price, room_type " +
-                  "FROM rooms r " +
-                  "WHERE r.available = TRUE " +  // Ensure the room is available
-                  "AND NOT EXISTS ( " +
-                  "    SELECT 1 FROM bookings b " +
-                  "    WHERE b.room_id = r.room_id " +
-                  "    AND b.start_date <= ? " +  // The room's booking start date must be after the provided date
-                  "    AND b.end_date >= ? " +    // The room's booking end date must be before the provided date
-                  ")";
-          try (PreparedStatement stmt = connection.prepareStatement(query)) {
-               stmt.setDate(1, date);  // Setting the date for both check-in and check-out
-               stmt.setDate(2, date);
-
-               try (ResultSet resultSet = stmt.executeQuery()) {
-                    while (resultSet.next()) {
-                         String roomId = resultSet.getString("room_id");
-                         String roomName = resultSet.getString("room_name");
-                         boolean availability = resultSet.getBoolean("availability");
-                         int capacity = resultSet.getInt("capacity");
-                         float price = resultSet.getFloat("price");
-                         String roomType = resultSet.getString("room_type");
-                         Room room = new Room(roomId, roomName, availability, capacity, price, roomType);
-                         availableRooms.add(room);
-                    }
-               }
-          } catch (SQLException e) {
-               e.printStackTrace();
-          }
-
-          return availableRooms;
+     public int getRateMorningAfternoon() {
+          return rateMorningAfternoon;
      }
 
+     public void setRateMorningAfternoon(int rateMorningAfternoon) {
+          this.rateMorningAfternoon = rateMorningAfternoon;
+     }
+
+     public int getRateAllDay() {
+          return rateAllDay;
+     }
+
+     public void setRateAllDay(int rateAllDay) {
+          this.rateAllDay = rateAllDay;
+     }
+
+     public int getRateWeek() {
+          return rateWeek;
+     }
+
+     public void setRateWeek(int rateWeek) {
+          this.rateWeek = rateWeek;
+     }
+
+     @Override
+     public String toString() {
+          return "Room{" +
+                  "name='" + name + '\'' +
+                  ", classroomCapacity=" + classroomCapacity +
+                  '}';
+     }
 }

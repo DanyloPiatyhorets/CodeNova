@@ -1,21 +1,17 @@
 package model.database;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBC {
-// https://sst-stuproj.city.ac.uk/phpmyadmin/index.php?route=/database/structure&db=in2033t29
-    private static final String URL = "jdbc:mysql://sst-stuproj.city.ac.uk:3306/in2033t29";
-    private static final String USER = "in2033t29_a";
-    private static final String PASSWORD = "q6yzPzkePog";
-    //Database name:  in2033t29
+    static Dotenv dotenv = Dotenv.load();
+    private static final String URL = dotenv.get("DB_URL");
+    private static final String USER = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
 
-    //Admin user:  in2033t29_a
-    //Admin password: q6yzPzkePog
-
-    //Data user:  in2033t29_d
-    //Data password: 8VHRrnzsM60
 
 
 
